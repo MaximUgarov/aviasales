@@ -1,64 +1,56 @@
 import React, { Fragment, useEffect, useMemo, useState } from 'react';
 import Header from './components/header/header';
 import List from './components/list'
-import { IitemTicketProps } from './types'
 import './index.css'
-import { useInterval } from './hooks/useInterval'
-import { longPollingReq } from './methods/longPollingReq';
 import { getSearchId } from './methods/getSearchId';
 import Sort from './components/sort';
 import { sortByPrice, sortByDuration, sortByOptimal } from './methods/sorts'
 import Category from './components/category';
+import { useLongPooling } from './hooks/useLongPooling';
 
 const App = () => {
 
   const [selectedSort, setSelectedSort] = useState<string>('cheap')
+  const [category, setSelectedCategory] = useState<Array<string>>([])
 
-  const [category, setSelectedCategory] = useState<Array<number | string>>([])
 
-  const [data, setData] = useState<IitemTicketProps[]>()
-  const [polling, setPolling] = useState<boolean>(false)
   const [isLoading, setIsLoading] = useState<boolean>(false)
-  const [delay, setDelay] = useState<number>(1000)
   const [searchId, setSearchId] = useState<string>("")
 
   useEffect(() => {
     setIsLoading(false)
-    setTimeout(() => setIsLoading(true), 1000)
-  }, [selectedSort,category])
+    setTimeout(() => setIsLoading(true), 1500)
+  }, [selectedSort, category])
 
   useEffect(() => {
-    getSearchId(setSearchId, setPolling)
+    getSearchId(setSearchId, startPooling, stopPooling)
   }, [])
 
-  useInterval(polling,
-    async () => {
-      longPollingReq(searchId, setData, setPolling, delay, setDelay, setIsLoading, data)
-    }
-    , delay)
 
+  const { startPooling, stopPooling, data } = useLongPooling(searchId, setIsLoading)
 
 
   const sortedItems = useMemo(() => {
-    if (selectedSort === 'cheap') {
-      return data ? sortByPrice(data) : data
-    } else if (selectedSort === 'fast') {
-      return data ? sortByDuration(data) : data
+    let value = data
+    switch (selectedSort) {
+      case 'cheap':
+        value = sortByPrice(data)
+        break;
+      case 'fast':
+        value = sortByDuration(data)
+        break;
+      case 'optimal':
+        value = sortByOptimal(data)
+        break;
     }
-    else if (selectedSort === 'optimal') {
-      return data ? sortByOptimal(data) : data
-    } else return data
+    return value
   }, [selectedSort, data])
 
   const categoredAndSortedItems = useMemo(() => {
     if (category.length === 0 || category.includes('all')) {
       return sortedItems
     } else {
-      return sortedItems?.filter((item) => {
-        if (item.segments && item.segments.length) {
-          return category.some(f => item.segments[0].stops.length == f)
-        } else return false
-      })
+      return sortedItems.filter((item) => category.some(f => item.segments[0].stops.length === parseInt(f)))
     }
   }, [sortedItems, category])
 
@@ -91,8 +83,8 @@ const App = () => {
             title: '3 пересадки',
             value: 3,
           }]}
-          setCategory={(value: number | string) => setSelectedCategory([...category, value])}
-          deleteCategory={(value: number | string) => deleteCategory(value)}
+          setCategory={(value: string) => setSelectedCategory([...category, value])}
+          deleteCategory={(value: string) => deleteCategory(value)}
         />
         <div className="list-wrapper">
           <Sort value={selectedSort} onChange={setSelectedSort} />

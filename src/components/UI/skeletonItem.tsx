@@ -6,7 +6,7 @@ interface ISkeletonProps {
 
 const SkeletonItem: FC<ISkeletonProps> = ({ quantity }: ISkeletonProps) => {
 
-    const item = <div className="item-wrapper">
+    const item = (index: number) => <div key={index} className="item-wrapper">
         <div className="item-header">
             <p className="item-header__price skeleton">
                 <span className="flare" />
@@ -49,14 +49,14 @@ const SkeletonItem: FC<ISkeletonProps> = ({ quantity }: ISkeletonProps) => {
 
     let content = []
     let i = 0;
-    while (i < quantity) { // выводит 0, затем 1, затем 2
+    while (i < quantity) { 
         content.push({});
         i++;
     }
 
     return (
         <Fragment>
-            {content.map(i => item)}
+            {content.map((i, index) => item(index))}
         </Fragment>
     );
 };

@@ -152,9 +152,12 @@ p {
     position: absolute;
     top: 0;
     left: 0;
-    height: 25px;
-    width: 25px;
-    background-color: #eee;
+    height: 20px;
+    width: 20px;
+    background-color: transparent;
+    border: 1px solid;
+    border-radius: 2px;
+    border-color: #9ABBCE;
 }
 
 
@@ -163,15 +166,19 @@ p {
 }
 
 
-.categories-item-checkbox-container input:checked~.categories-item-checkbox__check {
-    background-color: #2196F3;
-}
+/* .categories-item-checkbox-container input:checked~.categories-item-checkbox__check {
+    background-color: transpo;
+} */
 
 
 .categories-item-checkbox__check:after {
     content: "";
     position: absolute;
     display: none;
+    background-image: url('/public/img/Shape.svg');
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 
@@ -181,15 +188,11 @@ p {
 
 
 .categories-item-checkbox-container .categories-item-checkbox__check:after {
-    left: 9px;
-    top: 5px;
-    width: 5px;
-    height: 10px;
-    border: solid white;
-    border-width: 0 3px 3px 0;
-    -webkit-transform: rotate(45deg);
-    -ms-transform: rotate(45deg);
-    transform: rotate(45deg);
+    left: 50%;
+    top: 50%;
+    width: 88%;
+    height: 97%;
+    transform: translate(-50%, -50%);
 }
 
 /*  */
@@ -225,7 +228,7 @@ p {
 
 .sort-block select option {
     display: inline-flex;
-    width: 33%;
+    width: 33.3333333333%;
     margin: 0;
     padding: 0;
     height: 100%;
@@ -246,6 +249,10 @@ li.sort-block__item.active {
     cursor: unset;
     background: #2196F3;
     color: #FFFFFF;
+}
+
+select {
+    padding: 0
 }
 
 .sort-block>select:nth-child(1) {

@@ -2,7 +2,7 @@ import { IitemTicketProps } from '../../types'
 import { symmDuration } from '../symmDuration'
 
 
-export const sortByPrice = (data: IitemTicketProps[]) => {
+export const sortByPrice = (data: IitemTicketProps[]): IitemTicketProps[] => {
     return [...data.sort((a, b) => {
         if (a.price > b.price) return 1;
         if (a.price < b.price) return -1;
@@ -12,21 +12,18 @@ export const sortByPrice = (data: IitemTicketProps[]) => {
 
 
 
-export const sortByDuration = (data: IitemTicketProps[]) => {
+export const sortByDuration = (data: IitemTicketProps[]): IitemTicketProps[] => {
     return [...data.sort((a, b) => {
-        if (a.segments && b.segments) {
             const aSym = symmDuration(a);
             const bSym = symmDuration(b);
             if (aSym > bSym) return 1;
             if (aSym < bSym) return -1;
             else return 0;
-        } else return 0;
     })]
 }
 
-export const sortByOptimal = (data: IitemTicketProps[]) => {
+export const sortByOptimal = (data: IitemTicketProps[]): IitemTicketProps[] => {
     return [...data.sort((a, b) => {
-        if (a.segments && b.segments) {
             if (a.price > b.price) return 1;
             if (a.price < b.price) return -1;
             else {
@@ -36,7 +33,5 @@ export const sortByOptimal = (data: IitemTicketProps[]) => {
                 if (aSym < bSym) return -1;
                 else return 0;
             }
-        }
-        else return 0;
     })]
 }
