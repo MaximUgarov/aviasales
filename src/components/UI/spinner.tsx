@@ -39,8 +39,8 @@ const Spinner = ({ size, thickness, color, animationSpeed, background }: ISpinne
         left: 0;
         background-color: #B3B3B382;
         height: 86.7%;
-    top: 63px;
-    border-radius: 5px;
+        top: 70px;
+        border-radius: 5px;
         }
     `}</style>
 

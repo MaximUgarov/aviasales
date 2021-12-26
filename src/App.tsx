@@ -7,6 +7,7 @@ import Sort from './components/sort';
 import { sortByPrice, sortByDuration, sortByOptimal } from './methods/sorts'
 import Category from './components/category';
 import { useLongPooling } from './hooks/useLongPooling';
+import { useTypeSelector } from './hooks/useTypeSelector';
 
 const App = () => {
 
@@ -16,11 +17,12 @@ const App = () => {
 
   const [isLoading, setIsLoading] = useState<boolean>(false)
   const [searchId, setSearchId] = useState<string>("")
+  const { sorts } = useTypeSelector(state => state.sort)
 
   useEffect(() => {
     setIsLoading(false)
     setTimeout(() => setIsLoading(true), 1500)
-  }, [selectedSort, category])
+  }, [sorts, category])
 
   useEffect(() => {
     getSearchId(setSearchId, startPooling, stopPooling)
@@ -31,20 +33,18 @@ const App = () => {
 
 
   const sortedItems = useMemo(() => {
-    let value = data
-    switch (selectedSort) {
+    const sortType = sorts.find(i => i.active === true) 
+    switch (sortType?.value) {
       case 'cheap':
-        value = sortByPrice(data)
-        break;
+        return sortByPrice(data)
       case 'fast':
-        value = sortByDuration(data)
-        break;
+        return sortByDuration(data)
       case 'optimal':
-        value = sortByOptimal(data)
-        break;
+        return sortByOptimal(data)
+      default:
+        return data
     }
-    return value
-  }, [selectedSort, data])
+  }, [sorts, data])
 
   const categoredAndSortedItems = useMemo(() => {
     if (category.length === 0 || category.includes('all')) {
@@ -90,7 +90,6 @@ const App = () => {
           <Sort value={selectedSort} onChange={setSelectedSort} />
           <List items={categoredAndSortedItems} isLoading={isLoading} />
         </div>
-
       </div>
     </Fragment>
   );
